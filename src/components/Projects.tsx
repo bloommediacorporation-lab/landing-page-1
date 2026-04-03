@@ -37,6 +37,8 @@ export default function Projects() {
   const targetScroll = useRef(0);
   const currentScroll = useRef(0);
   const rafId = useRef<number | null>(null);
+  const touchStartX = useRef(0);
+  const touchStartScroll = useRef(0);
 
   useEffect(() => {
     const el = scrollRef.current;
@@ -76,14 +78,31 @@ export default function Projects() {
       el.style.userSelect = "";
     };
 
+    const onTouchStart = (e: TouchEvent) => {
+      touchStartX.current = e.touches[0].clientX;
+      touchStartScroll.current = el.scrollLeft;
+      targetScroll.current = el.scrollLeft;
+      currentScroll.current = el.scrollLeft;
+    };
+
+    const onTouchMove = (e: TouchEvent) => {
+      const deltaX = touchStartX.current - e.touches[0].clientX;
+      const walk = deltaX * 1.2;
+      targetScroll.current = touchStartScroll.current + walk;
+    };
+
     el.addEventListener("mousedown", onDown);
     window.addEventListener("mousemove", onMove);
     window.addEventListener("mouseup", onUp);
+    el.addEventListener("touchstart", onTouchStart, { passive: true });
+    el.addEventListener("touchmove", onTouchMove, { passive: true });
 
     return () => {
       el.removeEventListener("mousedown", onDown);
       window.removeEventListener("mousemove", onMove);
       window.removeEventListener("mouseup", onUp);
+      el.removeEventListener("touchstart", onTouchStart);
+      el.removeEventListener("touchmove", onTouchMove);
       if (rafId.current) cancelAnimationFrame(rafId.current);
     };
   }, []);
@@ -102,8 +121,8 @@ export default function Projects() {
           display: "flex",
           alignItems: "baseline",
           gap: "2rem",
-          padding: "0 clamp(2rem, 6vw, 8rem)",
-          marginBottom: "clamp(3rem, 5vh, 5rem)",
+          padding: "0 clamp(1.5rem, 5vw, 8rem)",
+          marginBottom: "clamp(2.5rem, 4vh, 4rem)",
         }}
       >
         <span
@@ -131,13 +150,15 @@ export default function Projects() {
         className="projects-scroll"
         style={{
           display: "flex",
-          gap: "1.5rem",
-          paddingLeft: "clamp(2rem, 6vw, 8rem)",
-          paddingRight: "clamp(2rem, 6vw, 8rem)",
+          gap: "1rem",
+          paddingLeft: "clamp(1.5rem, 5vw, 8rem)",
+          paddingRight: "clamp(1.5rem, 5vw, 8rem)",
           overflowX: "auto",
           overflowY: "hidden",
           cursor: "grab",
           scrollBehavior: "auto",
+          WebkitOverflowScrolling: "touch",
+          touchAction: "pan-y",
         }}
       >
         {PROJECTS.map((project, i) => (
@@ -146,12 +167,12 @@ export default function Projects() {
             data-hover
             style={{
               flexShrink: 0,
-              width: "clamp(320px, 35vw, 420px)",
-              height: "clamp(380px, 45vh, 480px)",
+              width: "min(85vw, 380px)",
+              height: "min(55vw, 420px)",
               borderRadius: "16px",
               background: project.color,
               border: "1px solid rgba(255,255,255,0.04)",
-              padding: "2rem",
+              padding: "clamp(1.2rem, 3vw, 2rem)",
               display: "flex",
               flexDirection: "column",
               justifyContent: "space-between",
@@ -159,18 +180,12 @@ export default function Projects() {
               overflow: "hidden",
               transition: "transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
             }}
-            onMouseEnter={(e) => {
-              if (!isDragging.current)
-                e.currentTarget.style.transform = "scale(0.97)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = "scale(1)";
-            }}
           >
             <div
               style={{
                 display: "flex",
                 justifyContent: "space-between",
+                alignItems: "flex-start",
               }}
             >
               <span
@@ -183,8 +198,8 @@ export default function Projects() {
                 {project.num}
               </span>
               <svg
-                width="22"
-                height="22"
+                width="20"
+                height="20"
                 viewBox="0 0 24 24"
                 fill="none"
                 style={{ opacity: 0.15 }}
@@ -200,29 +215,29 @@ export default function Projects() {
             <div>
               <span
                 style={{
-                  fontSize: "0.6rem",
+                  fontSize: "clamp(0.5rem, 1.5vw, 0.6rem)",
                   color: "#8b5cf6",
                   letterSpacing: "0.15em",
                   textTransform: "uppercase",
                   display: "block",
-                  marginBottom: "0.5rem",
+                  marginBottom: "0.4rem",
                 }}
               >
                 {project.category}
               </span>
               <h3
                 style={{
-                  fontSize: "clamp(1.4rem, 2.5vw, 1.8rem)",
+                  fontSize: "clamp(1.2rem, 4vw, 1.8rem)",
                   fontWeight: 400,
                   letterSpacing: "-0.02em",
-                  marginBottom: "0.6rem",
+                  marginBottom: "0.5rem",
                 }}
               >
                 {project.title}
               </h3>
               <span
                 style={{
-                  fontSize: "0.8rem",
+                  fontSize: "clamp(0.7rem, 2vw, 0.8rem)",
                   color: "rgba(255,255,255,0.4)",
                 }}
               >
@@ -236,15 +251,15 @@ export default function Projects() {
           data-hover
           style={{
             flexShrink: 0,
-            width: "clamp(280px, 30vw, 350px)",
-            height: "clamp(380px, 45vh, 480px)",
+            width: "min(70vw, 300px)",
+            height: "min(55vw, 420px)",
             borderRadius: "16px",
             border: "1px dashed rgba(139,92,246,0.2)",
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
             justifyContent: "center",
-            gap: "1.2rem",
+            gap: "1rem",
             cursor: "pointer",
             transition: "border-color 0.3s, background 0.3s",
           }}
@@ -259,9 +274,11 @@ export default function Projects() {
         >
           <span
             style={{
-              fontSize: "clamp(1.1rem, 1.8vw, 1.4rem)",
+              fontSize: "clamp(1rem, 3vw, 1.4rem)",
               fontWeight: 300,
               color: "rgba(255,255,255,0.4)",
+              textAlign: "center",
+              padding: "0 1rem",
             }}
           >
             Următorul proiect?
