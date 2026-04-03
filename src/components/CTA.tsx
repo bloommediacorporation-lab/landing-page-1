@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from "react";
 export default function CTA() {
   const lineRef = useRef<HTMLDivElement>(null);
   const sectionRef = useRef<HTMLElement>(null);
-  const titleRef = useRef<HTMLHeadingElement>(null);
   const buttonRef = useRef<HTMLAnchorElement>(null);
   const [isVisible, setIsVisible] = useState(false);
 
@@ -11,7 +10,7 @@ export default function CTA() {
     const section = sectionRef.current;
     if (!section) return;
 
-    const handleScroll = () => {
+    const checkVisibility = () => {
       const rect = section.getBoundingClientRect();
       const windowHeight = window.innerHeight;
       
@@ -20,10 +19,26 @@ export default function CTA() {
       }
     };
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll();
+    const handleLenisScroll = () => {
+      checkVisibility();
+    };
 
-    return () => window.removeEventListener("scroll", handleScroll);
+    const lenis = (window as any).__lenis;
+    if (lenis) {
+      lenis.on("scroll", handleLenisScroll);
+    } else {
+      window.addEventListener("scroll", checkVisibility, { passive: true });
+    }
+
+    checkVisibility();
+
+    return () => {
+      if (lenis) {
+        lenis.off("scroll", handleLenisScroll);
+      } else {
+        window.removeEventListener("scroll", checkVisibility);
+      }
+    };
   }, []);
 
   useEffect(() => {
@@ -78,7 +93,6 @@ export default function CTA() {
       </span>
 
       <h2
-        ref={titleRef}
         style={{
           fontSize: "clamp(2.5rem, 6vw, 5rem)",
           fontWeight: 200,
