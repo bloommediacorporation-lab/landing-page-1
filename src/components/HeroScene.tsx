@@ -31,9 +31,9 @@ function FloatingOrb() {
   });
 
   return (
-    <group position={[2.5, 0.3, 0]}>
+    <group position={[1.8, 0, 0]}>
       <Float speed={1} rotationIntensity={0.15} floatIntensity={0.4}>
-        <mesh ref={meshRef} scale={1.8}>
+        <mesh ref={meshRef} scale={2.5}>
           <icosahedronGeometry args={[1, 48]} />
           <MeshDistortMaterial
             ref={matRef}
@@ -48,7 +48,7 @@ function FloatingOrb() {
           />
         </mesh>
 
-        <mesh scale={2.4} rotation={[Math.PI / 2.5, 0.3, 0]}>
+        <mesh scale={3.2} rotation={[Math.PI / 2.5, 0.3, 0]}>
           <torusGeometry args={[1, 0.003, 16, 100]} />
           <meshBasicMaterial color="#8b5cf6" transparent opacity={0.2} />
         </mesh>
