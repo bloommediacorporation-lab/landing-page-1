@@ -34,70 +34,46 @@ const PROJECTS = [
 export default function Projects() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const isDragging = useRef(false);
-  const startX = useRef(0);
-  const scrollStart = useRef(0);
-  const lastX = useRef(0);
-  const velocity = useRef(0);
-  const lastMoveTime = useRef(0);
+  const targetScroll = useRef(0);
+  const currentScroll = useRef(0);
   const rafId = useRef<number | null>(null);
-  const momentum = useRef(0);
 
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
 
+    const lerp = (start: number, end: number, factor: number) => {
+      return start + (end - start) * factor;
+    };
+
+    const animate = () => {
+      if (!el) return;
+      
+      currentScroll.current = lerp(currentScroll.current, targetScroll.current, 0.12);
+      el.scrollLeft = currentScroll.current;
+      
+      rafId.current = requestAnimationFrame(animate);
+    };
+
+    rafId.current = requestAnimationFrame(animate);
+
     const onDown = (e: MouseEvent) => {
       isDragging.current = true;
-      startX.current = e.pageX;
-      scrollStart.current = el.scrollLeft;
-      lastX.current = e.pageX;
-      velocity.current = 0;
-      lastMoveTime.current = Date.now();
-      momentum.current = 0;
+      targetScroll.current = el.scrollLeft;
+      currentScroll.current = el.scrollLeft;
       el.style.cursor = "grabbing";
       el.style.userSelect = "none";
-      
-      if (rafId.current) {
-        cancelAnimationFrame(rafId.current);
-      }
     };
 
     const onMove = (e: MouseEvent) => {
       if (!isDragging.current) return;
-      
-      const now = Date.now();
-      const dt = now - lastMoveTime.current;
-      const deltaX = e.pageX - lastX.current;
-      
-      if (dt > 0) {
-        velocity.current = deltaX / dt;
-      }
-      
-      lastX.current = e.pageX;
-      lastMoveTime.current = now;
-      
-      const walk = (e.pageX - startX.current) * 1.2;
-      el.scrollLeft = scrollStart.current - walk;
+      targetScroll.current -= e.movementX * 1.5;
     };
 
     const onUp = () => {
-      if (!isDragging.current) return;
       isDragging.current = false;
       el.style.cursor = "grab";
       el.style.userSelect = "";
-      
-      momentum.current = velocity.current * 15;
-      
-      const animate = () => {
-        if (Math.abs(momentum.current) < 0.5) return;
-        
-        el.scrollLeft -= momentum.current;
-        momentum.current *= 0.92;
-        
-        rafId.current = requestAnimationFrame(animate);
-      };
-      
-      rafId.current = requestAnimationFrame(animate);
     };
 
     el.addEventListener("mousedown", onDown);
@@ -161,8 +137,7 @@ export default function Projects() {
           overflowX: "auto",
           overflowY: "hidden",
           cursor: "grab",
-          scrollSnapType: "x mandatory",
-          WebkitOverflowScrolling: "touch",
+          scrollBehavior: "auto",
         }}
       >
         {PROJECTS.map((project, i) => (
@@ -183,7 +158,6 @@ export default function Projects() {
               position: "relative",
               overflow: "hidden",
               transition: "transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
-              scrollSnapAlign: "start",
             }}
             onMouseEnter={(e) => {
               if (!isDragging.current)
@@ -273,7 +247,6 @@ export default function Projects() {
             gap: "1.2rem",
             cursor: "pointer",
             transition: "border-color 0.3s, background 0.3s",
-            scrollSnapAlign: "start",
           }}
           onMouseEnter={(e) => {
             e.currentTarget.style.borderColor = "rgba(139,92,246,0.5)";
