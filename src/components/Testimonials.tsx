@@ -28,7 +28,7 @@ const TESTIMONIALS = [
 export default function Testimonials() {
   const [active, setActive] = useState(0);
   const sectionRef = useRef<HTMLDivElement>(null);
-  const quoteRef = useRef<HTMLBlockquoteElement>(null);
+  const quoteRef = useRef<HTMLQuoteElement>(null);
   const infoRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
