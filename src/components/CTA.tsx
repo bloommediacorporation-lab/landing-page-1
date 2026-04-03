@@ -7,32 +7,66 @@ export default function CTA() {
   const textRef = useRef<HTMLHeadingElement>(null);
 
   useEffect(() => {
-    const section = sectionRef.current;
     const text = textRef.current;
     const line = lineRef.current;
     const button = buttonRef.current;
     
-    if (!section || !text || !line || !button) return;
+    if (!text || !line || !button) return;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            text.style.opacity = "1";
-            line.style.opacity = "1";
-            line.style.transform = "scaleX(1)";
-            button.style.opacity = "1";
-            button.style.transform = "translateY(0)";
-            observer.disconnect();
-          }
-        });
-      },
-      { threshold: 0.2 }
-    );
+    // Start at 0 opacity
+    text.style.opacity = "0";
+    line.style.opacity = "0";
+    line.style.transform = "scaleX(0)";
+    button.style.opacity = "0";
+    button.style.transform = "translateY(20px)";
 
-    observer.observe(section);
+    const handleScroll = () => {
+      const rect = text.getBoundingClientRect();
+      const windowHeight = window.innerHeight;
+      
+      // Fade starts when element top is at 80% of viewport height
+      // Fade completes when element top reaches 30% of viewport height
+      const fadeStart = windowHeight * 0.8;
+      const fadeEnd = windowHeight * 0.3;
+      
+      if (rect.top <= fadeEnd) {
+        // Fully visible
+        text.style.opacity = "1";
+        line.style.opacity = "1";
+        line.style.transform = "scaleX(1)";
+        button.style.opacity = "1";
+        button.style.transform = "translateY(0)";
+      } else if (rect.top < fadeStart) {
+        // In transition zone — calculate opacity
+        const progress = (fadeStart - rect.top) / (fadeStart - fadeEnd);
+        const opacity = Math.max(0, Math.min(1, progress));
+        text.style.opacity = String(opacity);
+        line.style.opacity = String(opacity);
+        line.style.transform = `scaleX(${opacity})`;
+        button.style.opacity = String(opacity);
+        button.style.transform = `translateY(${20 * (1 - opacity)}px)`;
+      }
+      // If rect.top >= fadeStart, opacity stays 0
+    };
 
-    return () => observer.disconnect();
+    // Use Lenis scroll if available, otherwise native scroll
+    const lenis = (window as any).__lenis;
+    if (lenis) {
+      lenis.on('scroll', handleScroll);
+    } else {
+      window.addEventListener('scroll', handleScroll, { passive: true });
+    }
+
+    // Run once on mount
+    handleScroll();
+
+    return () => {
+      if (lenis) {
+        lenis.off('scroll', handleScroll);
+      } else {
+        window.removeEventListener('scroll', handleScroll);
+      }
+    };
   }, []);
 
   const words = "Gata să transformi vizitatorii în clienți?".split(" ");
