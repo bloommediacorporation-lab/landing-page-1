@@ -3,60 +3,36 @@ import { useEffect, useRef } from "react";
 export default function CTA() {
   const contentRef = useRef<HTMLDivElement>(null);
   const lineRef = useRef<HTMLDivElement>(null);
-  const sectionRef = useRef<HTMLElement>(null);
+  const sectionRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
+  const buttonRef = useRef<HTMLAnchorElement>(null);
 
   useEffect(() => {
-    const title = titleRef.current;
     const section = sectionRef.current;
-    if (!title || !section) return;
+    const title = titleRef.current;
+    const line = lineRef.current;
+    const button = buttonRef.current;
+
+    if (!section || !title) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            const words = title.querySelectorAll(".cta-word");
-            words.forEach((word, i) => {
-              setTimeout(() => {
-                (word as HTMLElement).style.color = "#ffffff";
-                (word as HTMLElement).style.webkitTextStroke = "0px #ffffff";
-                (word as HTMLElement).style.opacity = "1";
-              }, i * 80);
-            });
+            title.style.opacity = "1";
+            line.style.opacity = "1";
+            line.style.transform = "scaleX(1)";
+            button.style.opacity = "1";
+            button.style.transform = "translateY(0)";
           }
         });
       },
-      { threshold: 0.3 }
+      { threshold: 0.2 }
     );
 
     observer.observe(section);
 
     return () => observer.disconnect();
-  }, []);
-
-  useEffect(() => {
-    if (lineRef.current && contentRef.current) {
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              lineRef.current!.style.transform = "scaleX(1)";
-              Array.from(contentRef.current!.children).forEach((child, i) => {
-                setTimeout(() => {
-                  (child as HTMLElement).style.opacity = "1";
-                  (child as HTMLElement).style.transform = "translateY(0)";
-                }, 400 + i * 150);
-              });
-            }
-          });
-        },
-        { threshold: 0.3 }
-      );
-
-      observer.observe(sectionRef.current!);
-
-      return () => observer.disconnect();
-    }
   }, []);
 
   const words = "Gata să transformi vizitatorii în clienți?".split(" ");
@@ -113,17 +89,16 @@ export default function CTA() {
           flexWrap: "wrap",
           justifyContent: "center",
           gap: "0 0.3em",
+          opacity: 0,
+          transition: "opacity 1.2s ease-out",
         }}
       >
         {words.map((word, i) => (
           <span
             key={i}
-            className="cta-word"
-            style={{ 
-              opacity: 0,
-              color: "transparent",
-              WebkitTextStroke: "2px rgba(255,255,255,0.5)",
-              transition: "all 0.6s cubic-bezier(0.16, 1, 0.3, 1)",
+            style={{
+              color: "#ffffff",
+              WebkitTextStroke: "0px",
             }}
           >
             {word}
@@ -140,44 +115,42 @@ export default function CTA() {
           margin: "3rem 0",
           transformOrigin: "center",
           transform: "scaleX(0)",
-          transition: "transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)",
+          opacity: 0,
+          transition: "transform 0.8s ease-out, opacity 0.8s ease-out",
+          transitionDelay: "0.3s",
         }}
       />
 
-      <div ref={contentRef}>
-        <a
-          href="mailto:contact@bloommedia.ro"
-          data-hover
-          style={{
-            display: "inline-block",
-            fontSize: "clamp(0.9rem, 2vw, 1.1rem)",
-            color: "rgba(255,255,255,0.7)",
-            textDecoration: "none",
-            padding: "1rem 2.5rem",
-            border: "1px solid rgba(139,92,246,0.3)",
-            borderRadius: "100px",
-            transition: "all 0.4s ease",
-            opacity: 0,
-            transform: "translateY(20px)",
-          }}
-          onMouseEnter={(e) => {
-            (e.currentTarget as HTMLAnchorElement).style.background =
-              "rgba(139,92,246,0.1)";
-            (e.currentTarget as HTMLAnchorElement).style.borderColor =
-              "rgba(139,92,246,0.6)";
-            (e.currentTarget as HTMLAnchorElement).style.color = "#ffffff";
-          }}
-          onMouseLeave={(e) => {
-            (e.currentTarget as HTMLAnchorElement).style.background = "";
-            (e.currentTarget as HTMLAnchorElement).style.borderColor =
-              "rgba(139,92,246,0.3)";
-            (e.currentTarget as HTMLAnchorElement).style.color =
-              "rgba(255,255,255,0.7)";
-          }}
-        >
-          contact@bloommedia.ro
-        </a>
-      </div>
+      <a
+        href="mailto:contact@bloommedia.ro"
+        ref={buttonRef}
+        data-hover
+        style={{
+          display: "inline-block",
+          fontSize: "clamp(0.9rem, 2vw, 1.1rem)",
+          color: "rgba(255,255,255,0.7)",
+          textDecoration: "none",
+          padding: "1rem 2.5rem",
+          border: "1px solid rgba(139,92,246,0.3)",
+          borderRadius: "100px",
+          opacity: 0,
+          transform: "translateY(20px)",
+          transition: "opacity 0.8s ease-out, transform 0.8s ease-out, background 0.4s ease, border-color 0.4s ease, color 0.4s ease",
+          transitionDelay: "0.6s",
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.background = "rgba(139,92,246,0.1)";
+          e.currentTarget.style.borderColor = "rgba(139,92,246,0.6)";
+          e.currentTarget.style.color = "#ffffff";
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.background = "";
+          e.currentTarget.style.borderColor = "rgba(139,92,246,0.3)";
+          e.currentTarget.style.color = "rgba(255,255,255,0.7)";
+        }}
+      >
+        contact@bloommedia.ro
+      </a>
     </section>
   );
 }
