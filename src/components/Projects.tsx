@@ -36,6 +36,11 @@ export default function Projects() {
   const isDragging = useRef(false);
   const startX = useRef(0);
   const scrollStart = useRef(0);
+  const lastX = useRef(0);
+  const velocity = useRef(0);
+  const lastMoveTime = useRef(0);
+  const rafId = useRef<number | null>(null);
+  const momentum = useRef(0);
 
   useEffect(() => {
     const el = scrollRef.current;
@@ -45,19 +50,54 @@ export default function Projects() {
       isDragging.current = true;
       startX.current = e.pageX;
       scrollStart.current = el.scrollLeft;
+      lastX.current = e.pageX;
+      velocity.current = 0;
+      lastMoveTime.current = Date.now();
+      momentum.current = 0;
       el.style.cursor = "grabbing";
+      el.style.userSelect = "none";
+      
+      if (rafId.current) {
+        cancelAnimationFrame(rafId.current);
+      }
     };
 
     const onMove = (e: MouseEvent) => {
       if (!isDragging.current) return;
-      e.preventDefault();
-      const walk = (e.pageX - startX.current) * 1.5;
+      
+      const now = Date.now();
+      const dt = now - lastMoveTime.current;
+      const deltaX = e.pageX - lastX.current;
+      
+      if (dt > 0) {
+        velocity.current = deltaX / dt;
+      }
+      
+      lastX.current = e.pageX;
+      lastMoveTime.current = now;
+      
+      const walk = (e.pageX - startX.current) * 1.2;
       el.scrollLeft = scrollStart.current - walk;
     };
 
     const onUp = () => {
+      if (!isDragging.current) return;
       isDragging.current = false;
       el.style.cursor = "grab";
+      el.style.userSelect = "";
+      
+      momentum.current = velocity.current * 15;
+      
+      const animate = () => {
+        if (Math.abs(momentum.current) < 0.5) return;
+        
+        el.scrollLeft -= momentum.current;
+        momentum.current *= 0.92;
+        
+        rafId.current = requestAnimationFrame(animate);
+      };
+      
+      rafId.current = requestAnimationFrame(animate);
     };
 
     el.addEventListener("mousedown", onDown);
@@ -68,6 +108,7 @@ export default function Projects() {
       el.removeEventListener("mousedown", onDown);
       window.removeEventListener("mousemove", onMove);
       window.removeEventListener("mouseup", onUp);
+      if (rafId.current) cancelAnimationFrame(rafId.current);
     };
   }, []);
 
