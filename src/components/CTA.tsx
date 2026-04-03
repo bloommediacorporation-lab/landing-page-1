@@ -4,7 +4,10 @@ export default function CTA() {
   const lineRef = useRef<HTMLDivElement>(null);
   const sectionRef = useRef<HTMLElement>(null);
   const buttonRef = useRef<HTMLAnchorElement>(null);
+  const textRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
+
+  const text = "Gata să transformi vizitatorii în clienți?";
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -50,7 +53,20 @@ export default function CTA() {
     }
   }, [isVisible]);
 
-  const words = "Gata să transformi vizitatorii în clienți?".split(" ");
+  const characters = text.split("").map((char, i) => (
+    <span
+      key={i}
+      style={{
+        display: "inline-block",
+        animation: isVisible ? `revealChar 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards` : "none",
+        animationDelay: `calc(${i} * 40ms)`,
+        opacity: 0,
+        ["--i" as string]: i,
+      }}
+    >
+      {char === " " ? "\u00A0" : char}
+    </span>
+  ));
 
   return (
     <section
@@ -65,6 +81,19 @@ export default function CTA() {
         position: "relative",
       }}
     >
+      <style>{`
+        @keyframes revealChar {
+          from { 
+            opacity: 0; 
+            transform: translateY(20px) rotateX(-40deg); 
+          }
+          to { 
+            opacity: 1; 
+            transform: translateY(0) rotateX(0); 
+          }
+        }
+      `}</style>
+
       <div
         style={{
           position: "absolute",
@@ -92,7 +121,8 @@ export default function CTA() {
         Contact
       </span>
 
-      <h2
+      <div
+        ref={textRef}
         style={{
           fontSize: "clamp(2.5rem, 6vw, 5rem)",
           fontWeight: 200,
@@ -102,23 +132,11 @@ export default function CTA() {
           display: "flex",
           flexWrap: "wrap",
           justifyContent: "center",
-          gap: "0 0.3em",
-          opacity: isVisible ? 1 : 0,
-          transition: "opacity 1.2s ease-out",
+          perspective: "1000px",
         }}
       >
-        {words.map((word, i) => (
-          <span
-            key={i}
-            style={{
-              color: "#ffffff",
-              WebkitTextStroke: "0px",
-            }}
-          >
-            {word}
-          </span>
-        ))}
-      </h2>
+        {characters}
+      </div>
 
       <div
         ref={lineRef}
