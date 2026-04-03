@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useRef, useEffect } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -40,28 +40,15 @@ export default function HorizontalScroll() {
     if (!sectionRef.current || !trackRef.current) return;
 
     const track = trackRef.current;
-    const totalScroll = track.scrollWidth - window.innerWidth;
-
-    gsap.to(track, {
-      x: -totalScroll,
-      ease: "none",
-      scrollTrigger: {
-        trigger: sectionRef.current,
-        start: "top top",
-        end: () => `+=${totalScroll}`,
-        scrub: 1,
-        pin: true,
-        anticipatePin: 1,
-      },
-    });
+    const cards = track.querySelectorAll(".project-card");
 
     if (titleRef.current) {
       gsap.fromTo(
         titleRef.current,
-        { opacity: 0, y: 40 },
+        { opacity: 0, x: -40 },
         {
           opacity: 1,
-          y: 0,
+          x: 0,
           duration: 1,
           ease: "power3.out",
           scrollTrigger: {
@@ -72,41 +59,60 @@ export default function HorizontalScroll() {
         }
       );
     }
+
+    cards.forEach((card, i) => {
+      gsap.fromTo(
+        card,
+        { opacity: 0, x: 100 },
+        {
+          opacity: 1,
+          x: 0,
+          duration: 0.8,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 70%",
+            once: true,
+          },
+          delay: i * 0.15,
+        }
+      );
+    });
   }, []);
 
   return (
     <section
       ref={sectionRef}
       style={{
-        position: "relative",
+        padding: "clamp(8rem, 15vh, 12rem) 0",
         overflow: "hidden",
       }}
     >
       <div
         style={{
-          position: "absolute",
-          top: "3rem",
-          left: "clamp(2rem, 6vw, 8rem)",
-          zIndex: 2,
+          paddingLeft: "clamp(2rem, 6vw, 8rem)",
+          marginBottom: "clamp(3rem, 6vh, 5rem)",
           display: "flex",
           alignItems: "baseline",
           gap: "2rem",
         }}
       >
-        <span style={{
-          fontSize: "0.7rem",
-          color: "#333",
-          fontFamily: "monospace",
-        }}>
+        <span
+          ref={titleRef}
+          style={{
+            fontSize: "0.7rem",
+            color: "#333",
+            fontFamily: "monospace",
+            opacity: 0,
+          }}
+        >
           03/
         </span>
         <h2
-          ref={titleRef}
           style={{
             fontSize: "clamp(1.5rem, 3vw, 2.5rem)",
             fontWeight: 200,
             letterSpacing: "-0.03em",
-            opacity: 0,
           }}
         >
           Proiecte
@@ -118,19 +124,25 @@ export default function HorizontalScroll() {
         style={{
           display: "flex",
           gap: "2rem",
-          padding: "8rem clamp(2rem, 6vw, 8rem) 4rem",
-          height: "100vh",
-          alignItems: "center",
+          paddingLeft: "clamp(2rem, 6vw, 8rem)",
+          paddingRight: "clamp(2rem, 6vw, 8rem)",
+          overflowX: "auto",
+          scrollSnapType: "x mandatory",
+          scrollBehavior: "smooth",
+          WebkitOverflowScrolling: "touch",
+          "scrollbar-width": "none",
+          "msOverflowStyle": "none",
         }}
       >
         {PROJECTS.map((project, i) => (
           <div
             key={i}
+            className="project-card"
             data-hover
             style={{
               flexShrink: 0,
-              width: "clamp(350px, 40vw, 500px)",
-              height: "clamp(400px, 50vh, 550px)",
+              width: "clamp(320px, 40vw, 450px)",
+              height: "clamp(350px, 50vh, 500px)",
               borderRadius: "16px",
               background: project.color,
               border: "1px solid rgba(255,255,255,0.04)",
@@ -141,13 +153,17 @@ export default function HorizontalScroll() {
               position: "relative",
               overflow: "hidden",
               cursor: "pointer",
-              transition: "transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
+              scrollSnapAlign: "start",
+              transition: "transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s",
+              opacity: 0,
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.transform = "scale(0.98)";
+              e.currentTarget.style.transform = "scale(0.98) translateY(-4px)";
+              e.currentTarget.style.borderColor = "rgba(139,92,246,0.25)";
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.transform = "scale(1)";
+              e.currentTarget.style.transform = "scale(1) translateY(0)";
+              e.currentTarget.style.borderColor = "rgba(255,255,255,0.04)";
             }}
           >
             <span
@@ -190,7 +206,7 @@ export default function HorizontalScroll() {
               </span>
               <h3
                 style={{
-                  fontSize: "clamp(1.5rem, 2.5vw, 2rem)",
+                  fontSize: "clamp(1.4rem, 2.5vw, 1.8rem)",
                   fontWeight: 400,
                   marginBottom: "0.8rem",
                   letterSpacing: "-0.02em",
@@ -233,8 +249,8 @@ export default function HorizontalScroll() {
           data-hover
           style={{
             flexShrink: 0,
-            width: "clamp(300px, 30vw, 400px)",
-            height: "clamp(400px, 50vh, 550px)",
+            width: "clamp(280px, 30vw, 350px)",
+            height: "clamp(350px, 50vh, 500px)",
             borderRadius: "16px",
             border: "1px solid rgba(139,92,246,0.15)",
             display: "flex",
@@ -243,7 +259,9 @@ export default function HorizontalScroll() {
             justifyContent: "center",
             gap: "1.5rem",
             cursor: "pointer",
+            scrollSnapAlign: "start",
             transition: "border-color 0.3s",
+            alignSelf: "center",
           }}
           onMouseEnter={(e) => {
             e.currentTarget.style.borderColor = "rgba(139,92,246,0.4)";
@@ -252,22 +270,32 @@ export default function HorizontalScroll() {
             e.currentTarget.style.borderColor = "rgba(139,92,246,0.15)";
           }}
         >
-          <span style={{
-            fontSize: "clamp(1.2rem, 2vw, 1.5rem)",
-            fontWeight: 300,
-            color: "rgba(255,255,255,0.5)",
-          }}>
+          <span
+            style={{
+              fontSize: "clamp(1.2rem, 2vw, 1.5rem)",
+              fontWeight: 300,
+              color: "rgba(255,255,255,0.5)",
+            }}
+          >
             Următorul proiect?
           </span>
-          <span style={{
-            fontSize: "0.75rem",
-            color: "#8b5cf6",
-            letterSpacing: "0.1em",
-          }}>
+          <span
+            style={{
+              fontSize: "0.75rem",
+              color: "#8b5cf6",
+              letterSpacing: "0.1em",
+            }}
+          >
             Poate fi al tău →
           </span>
         </div>
       </div>
+
+      <style>{`
+        .project-card::-webkit-scrollbar {
+          display: none;
+        }
+      `}</style>
     </section>
   );
 }
