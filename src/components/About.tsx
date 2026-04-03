@@ -1,8 +1,47 @@
 import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { Canvas, useFrame } from "@react-three/fiber";
+import { Float, MeshDistortMaterial, Environment } from "@react-three/drei";
+import { Suspense, useRef as useThreeRef } from "react";
+import * as THREE from "three";
 
 gsap.registerPlugin(ScrollTrigger);
+
+function AbstractShape() {
+  const ref = useThreeRef<THREE.Mesh>(null);
+  const mat = useThreeRef<any>(null);
+
+  useFrame(({ clock }) => {
+    const t = clock.getElapsedTime();
+    if (ref.current) {
+      ref.current.rotation.x = t * 0.15;
+      ref.current.rotation.z = t * 0.1;
+    }
+    if (mat.current) {
+      mat.current.distort = 0.3 + Math.sin(t * 0.5) * 0.15;
+    }
+  });
+
+  return (
+    <Float speed={0.8} rotationIntensity={0.2}>
+      <mesh ref={ref} scale={1.5}>
+        <torusKnotGeometry args={[1, 0.35, 200, 32]} />
+        <MeshDistortMaterial
+          ref={mat}
+          color="#0a0020"
+          emissive="#4c1d95"
+          emissiveIntensity={0.6}
+          roughness={0.15}
+          metalness={0.9}
+          distort={0.3}
+          speed={1.5}
+          envMapIntensity={2}
+        />
+      </mesh>
+    </Float>
+  );
+}
 
 export default function About() {
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -204,52 +243,24 @@ export default function About() {
           height: "clamp(400px, 60vh, 700px)",
           borderRadius: "12px",
           overflow: "hidden",
+          background: "#0a0015",
         }}
       >
-        <div
-          ref={imageRef}
-          style={{
-            position: "absolute",
-            inset: "-15%",
-            background:
-              "linear-gradient(135deg, #1a0a2e 0%, #0a0015 50%, #150a25 100%)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <div
-            style={{
-              width: "200px",
-              height: "200px",
-              borderRadius: "50%",
-              border: "1px solid rgba(139,92,246,0.15)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
+        <div ref={imageRef} style={{ position: "absolute", inset: 0 }}>
+          <Canvas
+            camera={{ position: [0, 0, 4], fov: 45 }}
+            gl={{ antialias: true, alpha: true }}
+            style={{ position: "absolute", inset: 0 }}
+            dpr={[1, 1.5]}
           >
-            <div
-              style={{
-                width: "120px",
-                height: "120px",
-                borderRadius: "50%",
-                border: "1px solid rgba(139,92,246,0.1)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <div
-                style={{
-                  width: "8px",
-                  height: "8px",
-                  borderRadius: "50%",
-                  background: "#8b5cf6",
-                }}
-              />
-            </div>
-          </div>
+            <Suspense fallback={null}>
+              <Environment preset="night" background={false} />
+              <ambientLight intensity={0.15} />
+              <spotLight position={[5, 5, 5]} intensity={2} color="#7c3aed" penumbra={1} />
+              <spotLight position={[-5, -3, -3]} intensity={1} color="#ec4899" penumbra={1} />
+              <AbstractShape />
+            </Suspense>
+          </Canvas>
         </div>
 
         <div

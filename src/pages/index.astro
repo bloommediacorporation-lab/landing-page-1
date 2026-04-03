@@ -3,13 +3,16 @@ import Layout from "../layouts/Layout.astro";
 import Loader from "../components/Loader";
 import CustomCursor from "../components/CustomCursor";
 import SmoothScroll from "../components/SmoothScroll";
+import FilmGrain from "../components/FilmGrain";
+import BackgroundGrid from "../components/BackgroundGrid";
 import Navbar from "../components/Navbar";
 import Hero from "../components/Hero";
 import HeroScene from "../components/HeroScene";
 import LogoMarquee from "../components/LogoMarquee";
-import Marquee from "../components/Marquee";
 import About from "../components/About";
 import AnimatedStats from "../components/AnimatedStats";
+import VelocityMarquee from "../components/VelocityMarquee";
+import HorizontalScroll from "../components/HorizontalScroll";
 import Services from "../components/Services";
 import SectionDivider from "../components/SectionDivider";
 import Testimonials from "../components/Testimonials";
@@ -18,12 +21,15 @@ import Footer from "../components/Footer";
 ---
 
 <Layout title="Bloom Media — Marketing Digital">
+  <!-- System layers -->
   <Loader client:only="react" />
   <CustomCursor client:only="react" />
   <SmoothScroll client:only="react" />
+  <FilmGrain client:only="react" />
+  <BackgroundGrid />
   <Navbar client:only="react" />
 
-  <!-- Hero -->
+  <!-- 01 — Hero -->
   <div style="position: relative;">
     <HeroScene client:only="react" />
     <Hero client:only="react" />
@@ -32,16 +38,32 @@ import Footer from "../components/Footer";
   <!-- Social Proof -->
   <LogoMarquee client:only="react" />
 
-  <!-- About -->
+  <!-- 02 — About -->
   <About client:only="react" />
 
   <!-- Stats -->
   <AnimatedStats client:only="react" />
 
-  <!-- Marquee -->
-  <Marquee client:only="react" />
+  <!-- Velocity Marquee -->
+  <div style="border-top: 1px solid rgba(255,255,255,0.03); border-bottom: 1px solid rgba(255,255,255,0.03); padding: 1.5rem 0;">
+    <VelocityMarquee
+      client:only="react"
+      text="LANDING PAGES · AUTOMATIZĂRI · CONVERSIE MAXIMĂ · DESIGN PREMIUM · SEO & ADS"
+      baseSpeed={1.2}
+      direction={-1}
+    />
+    <VelocityMarquee
+      client:only="react"
+      text="BRANDING · WEB DEVELOPMENT · STRATEGIE DIGITALĂ · CAMPANII ADS · CRO"
+      baseSpeed={0.8}
+      direction={1}
+    />
+  </div>
 
-  <!-- Services -->
+  <!-- 03 — Projects (horizontal scroll) -->
+  <HorizontalScroll client:only="react" />
+
+  <!-- 04 — Services -->
   <Services client:only="react" />
 
   <!-- Divider -->
