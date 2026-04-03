@@ -14,20 +14,22 @@ export default function CTA() {
     
     if (!section || !text || !line || !button) return;
 
+    let hasAnimated = false;
+    
     const handleScroll = () => {
+      if (hasAnimated) return;
+      
       const rect = section.getBoundingClientRect();
       const windowHeight = window.innerHeight;
-      const sectionHeight = rect.height;
       
-      const scrolled = windowHeight - rect.top;
-      const total = windowHeight + sectionHeight;
-      const progress = Math.min(Math.max(scrolled / total, 0), 1);
-      
-      text.style.opacity = progress.toString();
-      line.style.opacity = progress.toString();
-      line.style.transform = `scaleX(${progress})`;
-      button.style.opacity = progress.toString();
-      button.style.transform = `translateY(${(1 - progress) * 20}px)`;
+      if (rect.top < windowHeight * 0.8 && rect.bottom > 0) {
+        hasAnimated = true;
+        text.style.opacity = "1";
+        line.style.opacity = "1";
+        line.style.transform = "scaleX(1)";
+        button.style.opacity = "1";
+        button.style.transform = "translateY(0)";
+      }
     };
 
     const handleLenisScroll = () => {
