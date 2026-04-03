@@ -7,6 +7,7 @@ const PROJECTS = [
     category: "Landing Page + Ads",
     result: "+37 programări/lună",
     color: "#1a0a2e",
+    image: "https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=600&h=400&fit=crop",
   },
   {
     num: "02",
@@ -14,6 +15,7 @@ const PROJECTS = [
     category: "Automatizări CRM",
     result: "15h/săptămână economisite",
     color: "#0a1628",
+    image: "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=600&h=400&fit=crop",
   },
   {
     num: "03",
@@ -21,6 +23,7 @@ const PROJECTS = [
     category: "Branding + Web",
     result: "3x ROI în 90 zile",
     color: "#1a0520",
+    image: "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=600&h=400&fit=crop",
   },
   {
     num: "04",
@@ -28,6 +31,7 @@ const PROJECTS = [
     category: "SEO + Content",
     result: "#1 Google local",
     color: "#0a1a15",
+    image: "https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?w=600&h=400&fit=crop",
   },
 ];
 
@@ -172,77 +176,137 @@ export default function Projects() {
               borderRadius: "16px",
               background: project.color,
               border: "1px solid rgba(255,255,255,0.04)",
-              padding: "clamp(1.2rem, 3vw, 2rem)",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "space-between",
-              position: "relative",
               overflow: "hidden",
+              position: "relative",
               transition: "transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
             }}
           >
+            <img
+              src={project.image}
+              alt={project.title}
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                position: "absolute",
+                top: 0,
+                left: 0,
+                opacity: 0.5,
+                transition: "transform 0.7s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s",
+              }}
+              onMouseEnter={(e) => {
+                if (!isDragging.current) {
+                  e.currentTarget.style.transform = "scale(1.05)";
+                  e.currentTarget.style.opacity = "0.7";
+                }
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = "scale(1)";
+                e.currentTarget.style.opacity = "0.5";
+              }}
+            />
+
             <div
               style={{
+                position: "absolute",
+                bottom: 0,
+                left: 0,
+                right: 0,
+                height: "60%",
+                background: "linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.5) 50%, transparent 100%)",
+                pointerEvents: "none",
+              }}
+            />
+
+            <div
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                height: "40%",
+                background: "linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, transparent 100%)",
+                pointerEvents: "none",
+              }}
+            />
+
+            <div
+              style={{
+                padding: "clamp(1.2rem, 3vw, 2rem)",
                 display: "flex",
+                flexDirection: "column",
                 justifyContent: "space-between",
-                alignItems: "flex-start",
+                height: "100%",
+                position: "relative",
+                zIndex: 1,
               }}
             >
-              <span
+              <div
                 style={{
-                  fontSize: "0.65rem",
-                  color: "rgba(255,255,255,0.15)",
-                  fontFamily: "monospace",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "flex-start",
                 }}
               >
-                {project.num}
-              </span>
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                style={{ opacity: 0.15 }}
-              >
-                <path
-                  d="M7 17L17 7M17 7H7M17 7V17"
-                  stroke="white"
-                  strokeWidth="1"
-                />
-              </svg>
-            </div>
+                <span
+                  style={{
+                    fontSize: "0.65rem",
+                    color: "rgba(255,255,255,0.5)",
+                    fontFamily: "monospace",
+                    background: "rgba(0,0,0,0.3)",
+                    padding: "0.3rem 0.6rem",
+                    borderRadius: "4px",
+                  }}
+                >
+                  {project.num}
+                </span>
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  style={{ opacity: 0.5 }}
+                >
+                  <path
+                    d="M7 17L17 7M17 7H7M17 7V17"
+                    stroke="white"
+                    strokeWidth="1.5"
+                  />
+                </svg>
+              </div>
 
-            <div>
-              <span
-                style={{
-                  fontSize: "clamp(0.5rem, 1.5vw, 0.6rem)",
-                  color: "#8b5cf6",
-                  letterSpacing: "0.15em",
-                  textTransform: "uppercase",
-                  display: "block",
-                  marginBottom: "0.4rem",
-                }}
-              >
-                {project.category}
-              </span>
-              <h3
-                style={{
-                  fontSize: "clamp(1.2rem, 4vw, 1.8rem)",
-                  fontWeight: 400,
-                  letterSpacing: "-0.02em",
-                  marginBottom: "0.5rem",
-                }}
-              >
-                {project.title}
-              </h3>
-              <span
-                style={{
-                  fontSize: "clamp(0.7rem, 2vw, 0.8rem)",
-                  color: "rgba(255,255,255,0.4)",
-                }}
-              >
-                {project.result}
-              </span>
+              <div>
+                <span
+                  style={{
+                    fontSize: "clamp(0.5rem, 1.5vw, 0.6rem)",
+                    color: "#a78bfa",
+                    letterSpacing: "0.15em",
+                    textTransform: "uppercase",
+                    display: "block",
+                    marginBottom: "0.4rem",
+                  }}
+                >
+                  {project.category}
+                </span>
+                <h3
+                  style={{
+                    fontSize: "clamp(1.2rem, 4vw, 1.8rem)",
+                    fontWeight: 500,
+                    letterSpacing: "-0.02em",
+                    marginBottom: "0.3rem",
+                  }}
+                >
+                  {project.title}
+                </h3>
+                <span
+                  style={{
+                    fontSize: "clamp(0.7rem, 2vw, 0.8rem)",
+                    color: "rgba(255,255,255,0.6)",
+                  }}
+                >
+                  {project.result}
+                </span>
+              </div>
             </div>
           </div>
         ))}
@@ -254,7 +318,7 @@ export default function Projects() {
             width: "min(70vw, 300px)",
             height: "min(55vw, 420px)",
             borderRadius: "16px",
-            border: "1px dashed rgba(139,92,246,0.2)",
+            border: "1px dashed rgba(139,92,246,0.3)",
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
@@ -262,14 +326,15 @@ export default function Projects() {
             gap: "1rem",
             cursor: "pointer",
             transition: "border-color 0.3s, background 0.3s",
+            background: "rgba(139,92,246,0.02)",
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.borderColor = "rgba(139,92,246,0.5)";
-            e.currentTarget.style.background = "rgba(139,92,246,0.03)";
+            e.currentTarget.style.borderColor = "rgba(139,92,246,0.6)";
+            e.currentTarget.style.background = "rgba(139,92,246,0.05)";
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.borderColor = "rgba(139,92,246,0.2)";
-            e.currentTarget.style.background = "transparent";
+            e.currentTarget.style.borderColor = "rgba(139,92,246,0.3)";
+            e.currentTarget.style.background = "rgba(139,92,246,0.02)";
           }}
         >
           <span
