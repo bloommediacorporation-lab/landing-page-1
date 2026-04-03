@@ -27,6 +27,25 @@ const PROJECTS = [
   },
 ];
 
+const MARQUEE_ITEMS = [
+  "Proiecte",
+  "—",
+  "Rezultate Reale",
+  "—",
+  "ROI Demonstrabil",
+  "—",
+  "Clienți Mulțumiți",
+  "—",
+  "Proiecte",
+  "—",
+  "Rezultate Reale",
+  "—",
+  "ROI Demonstrabil",
+  "—",
+  "Clienți Mulțumiți",
+  "—",
+];
+
 export default function HorizontalScroll() {
   const trackRef = useRef<HTMLDivElement>(null);
 
@@ -70,6 +89,40 @@ export default function HorizontalScroll() {
         >
           Proiecte
         </h2>
+      </div>
+
+      <div
+        style={{
+          overflow: "hidden",
+          position: "relative",
+          paddingVertical: "clamp(1.5rem, 3vh, 2.5rem)",
+          marginBottom: "clamp(2rem, 4vh, 3rem)",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            width: "fit-content",
+            animation: "marquee 30s linear infinite",
+          }}
+        >
+          {MARQUEE_ITEMS.map((item, i) => (
+            <span
+              key={i}
+              style={{
+                fontSize: "clamp(3rem, 8vw, 6rem)",
+                fontWeight: 600,
+                letterSpacing: "-0.03em",
+                color: item === "—" ? "#8b5cf6" : "transparent",
+                WebkitTextStroke: item === "—" ? "none" : "1px rgba(255,255,255,0.15)",
+                paddingRight: "clamp(1rem, 2vw, 2rem)",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {item}
+            </span>
+          ))}
+        </div>
       </div>
 
       <div
@@ -245,6 +298,14 @@ export default function HorizontalScroll() {
       </div>
 
       <style>{`
+        @keyframes marquee {
+          0% {
+            transform: translateX(0);
+          }
+          100% {
+            transform: translateX(-50%);
+          }
+        }
         .scroll-track::-webkit-scrollbar {
           display: none;
         }
