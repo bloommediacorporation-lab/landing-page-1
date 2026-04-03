@@ -8,6 +8,7 @@ export default function CTA() {
   const titleRef = useRef<HTMLHeadingElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const lineRef = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     if (titleRef.current) {
@@ -66,11 +67,37 @@ export default function CTA() {
     }
   }, []);
 
+  useEffect(() => {
+    const title = titleRef.current;
+    const section = sectionRef.current;
+    if (!title || !section) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const words = title.querySelectorAll(".cta-word");
+            words.forEach((word) => {
+              (word as HTMLElement).style.color = "#ffffff";
+              (word as HTMLElement).style.webkitTextStroke = "0px #ffffff";
+            });
+          }
+        });
+      },
+      { threshold: 0.3 }
+    );
+
+    observer.observe(section);
+
+    return () => observer.disconnect();
+  }, []);
+
   const words = "Gata să transformi vizitatorii în clienți?".split(" ");
 
   return (
     <section
       id="contact"
+      ref={sectionRef}
       style={{
         padding: "clamp(10rem, 20vh, 20rem) clamp(2rem, 6vw, 8rem)",
         display: "flex",
@@ -125,7 +152,12 @@ export default function CTA() {
           <span
             key={i}
             className="cta-word"
-            style={{ opacity: 0.08 }}
+            style={{ 
+              opacity: 0.08,
+              color: "transparent",
+              WebkitTextStroke: "1px rgba(255,255,255,0.25)",
+              transition: "color 0.8s ease, webkitTextStroke 0.8s ease, opacity 0.8s ease"
+            }}
           >
             {word}
           </span>
@@ -149,76 +181,31 @@ export default function CTA() {
           href="mailto:contact@bloommedia.ro"
           data-hover
           style={{
-            fontSize: "clamp(0.9rem, 1.2vw, 1.1rem)",
-            color: "#666",
-            display: "block",
-            marginBottom: "0.5rem",
-            transition: "color 0.3s",
-          }}
-          onMouseEnter={(e) => (e.currentTarget.style.color = "#c4b5fd")}
-          onMouseLeave={(e) => (e.currentTarget.style.color = "#666")}
-        >
-          contact@bloommedia.ro
-        </a>
-
-        <a
-          href="tel:0734270188"
-          data-hover
-          style={{
-            fontSize: "clamp(0.9rem, 1.2vw, 1.1rem)",
-            color: "#444",
-            display: "block",
-            marginBottom: "3rem",
-            transition: "color 0.3s",
-          }}
-          onMouseEnter={(e) => (e.currentTarget.style.color = "#c4b5fd")}
-          onMouseLeave={(e) => (e.currentTarget.style.color = "#444")}
-        >
-          0734 270 188
-        </a>
-
-        <a
-          href="mailto:contact@bloommedia.ro"
-          data-hover
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: "0.8rem",
-            padding: "1.1rem 3rem",
-            border: "1px solid rgba(255,255,255,0.1)",
+            display: "inline-block",
+            fontSize: "clamp(0.9rem, 2vw, 1.1rem)",
+            color: "rgba(255,255,255,0.7)",
+            textDecoration: "none",
+            padding: "1rem 2.5rem",
+            border: "1px solid rgba(139,92,246,0.3)",
             borderRadius: "100px",
-            fontSize: "0.85rem",
-            letterSpacing: "0.05em",
-            color: "white",
-            background: "transparent",
-            transition:
-              "all 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
+            transition: "all 0.4s ease",
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.background = "white";
-            e.currentTarget.style.color = "#050505";
-            e.currentTarget.style.borderColor = "white";
-            e.currentTarget.style.transform = "scale(1.05)";
-            e.currentTarget.style.boxShadow =
-              "0 0 40px rgba(139,92,246,0.2)";
+            (e.currentTarget as HTMLAnchorElement).style.background =
+              "rgba(139,92,246,0.1)";
+            (e.currentTarget as HTMLAnchorElement).style.borderColor =
+              "rgba(139,92,246,0.6)";
+            (e.currentTarget as HTMLAnchorElement).style.color = "#ffffff";
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.background = "transparent";
-            e.currentTarget.style.color = "white";
-            e.currentTarget.style.borderColor =
-              "rgba(255,255,255,0.1)";
-            e.currentTarget.style.transform = "scale(1)";
-            e.currentTarget.style.boxShadow = "none";
+            (e.currentTarget as HTMLAnchorElement).style.background = "";
+            (e.currentTarget as HTMLAnchorElement).style.borderColor =
+              "rgba(139,92,246,0.3)";
+            (e.currentTarget as HTMLAnchorElement).style.color =
+              "rgba(255,255,255,0.7)";
           }}
         >
-          Hai să vorbim
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-            <path
-              d="M7 17L17 7M17 7H7M17 7V17"
-              stroke="currentColor"
-              strokeWidth="1.5"
-            />
-          </svg>
+          contact@bloommedia.ro
         </a>
       </div>
     </section>
