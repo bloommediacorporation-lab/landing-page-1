@@ -6,36 +6,49 @@ import SmoothScroll from "../components/SmoothScroll";
 import Navbar from "../components/Navbar";
 import Hero from "../components/Hero";
 import HeroScene from "../components/HeroScene";
+import LogoMarquee from "../components/LogoMarquee";
 import Marquee from "../components/Marquee";
+import About from "../components/About";
+import AnimatedStats from "../components/AnimatedStats";
 import Services from "../components/Services";
+import SectionDivider from "../components/SectionDivider";
+import Testimonials from "../components/Testimonials";
 import CTA from "../components/CTA";
 import Footer from "../components/Footer";
 ---
 
-<Layout title="Bloom — Marketing Digital">
-  <!-- Loader -->
+<Layout title="Bloom Media — Marketing Digital">
   <Loader client:only="react" />
-
-  <!-- Custom Cursor -->
   <CustomCursor client:only="react" />
-
-  <!-- Smooth Scroll -->
   <SmoothScroll client:only="react" />
-
-  <!-- Navbar -->
   <Navbar client:only="react" />
 
-  <!-- Hero + 3D Background -->
+  <!-- Hero -->
   <div style="position: relative;">
     <HeroScene client:only="react" />
     <Hero client:only="react" />
   </div>
+
+  <!-- Social Proof -->
+  <LogoMarquee client:only="react" />
+
+  <!-- About -->
+  <About client:only="react" />
+
+  <!-- Stats -->
+  <AnimatedStats client:only="react" />
 
   <!-- Marquee -->
   <Marquee client:only="react" />
 
   <!-- Services -->
   <Services client:only="react" />
+
+  <!-- Divider -->
+  <SectionDivider />
+
+  <!-- Testimonials -->
+  <Testimonials client:only="react" />
 
   <!-- CTA -->
   <CTA client:only="react" />
