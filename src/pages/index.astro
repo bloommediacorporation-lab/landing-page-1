@@ -1,0 +1,45 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Loader from "../components/Loader";
+import CustomCursor from "../components/CustomCursor";
+import SmoothScroll from "../components/SmoothScroll";
+import Navbar from "../components/Navbar";
+import Hero from "../components/Hero";
+import HeroScene from "../components/HeroScene";
+import Marquee from "../components/Marquee";
+import Services from "../components/Services";
+import CTA from "../components/CTA";
+import Footer from "../components/Footer";
+---
+
+<Layout title="Bloom — Marketing Digital">
+  <!-- Loader -->
+  <Loader client:only="react" />
+
+  <!-- Custom Cursor -->
+  <CustomCursor client:only="react" />
+
+  <!-- Smooth Scroll -->
+  <SmoothScroll client:only="react" />
+
+  <!-- Navbar -->
+  <Navbar client:only="react" />
+
+  <!-- Hero + 3D Background -->
+  <div style="position: relative;">
+    <HeroScene client:only="react" />
+    <Hero client:only="react" />
+  </div>
+
+  <!-- Marquee -->
+  <Marquee client:only="react" />
+
+  <!-- Services -->
+  <Services client:only="react" />
+
+  <!-- CTA -->
+  <CTA client:only="react" />
+
+  <!-- Footer -->
+  <Footer client:only="react" />
+</Layout>
