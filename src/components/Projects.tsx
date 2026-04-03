@@ -43,6 +43,8 @@ export default function Projects() {
   const rafId = useRef<number | null>(null);
   const touchStartX = useRef(0);
   const touchStartScroll = useRef(0);
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     const el = scrollRef.current;
@@ -111,8 +113,32 @@ export default function Projects() {
     };
   }, []);
 
+  useEffect(() => {
+    const title = titleRef.current;
+    const section = sectionRef.current;
+    if (!title || !section) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            title.style.opacity = "1";
+            title.style.color = "#ffffff";
+            title.style.webkitTextStroke = "0px #ffffff";
+          }
+        });
+      },
+      { threshold: 0.5 }
+    );
+
+    observer.observe(section);
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <section
+      ref={sectionRef}
       style={{
         position: "relative",
         zIndex: 6,
@@ -139,10 +165,15 @@ export default function Projects() {
           03/
         </span>
         <h2
+          ref={titleRef}
           style={{
             fontSize: "clamp(2rem, 4vw, 3.5rem)",
             fontWeight: 200,
             letterSpacing: "-0.03em",
+            opacity: 0,
+            color: "transparent",
+            WebkitTextStroke: "1px rgba(255,255,255,0.3)",
+            transition: "opacity 0.8s ease, color 0.8s ease, webkitTextStroke 0.8s ease",
           }}
         >
           Proiecte
