@@ -14,44 +14,25 @@ export default function CTA() {
     
     if (!section || !text || !line || !button) return;
 
-    let hasAnimated = false;
-    
-    const handleScroll = () => {
-      if (hasAnimated) return;
-      
-      const rect = section.getBoundingClientRect();
-      const windowHeight = window.innerHeight;
-      
-      if (rect.top < windowHeight * 0.8 && rect.bottom > 0) {
-        hasAnimated = true;
-        text.style.opacity = "1";
-        line.style.opacity = "1";
-        line.style.transform = "scaleX(1)";
-        button.style.opacity = "1";
-        button.style.transform = "translateY(0)";
-      }
-    };
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            text.style.opacity = "1";
+            line.style.opacity = "1";
+            line.style.transform = "scaleX(1)";
+            button.style.opacity = "1";
+            button.style.transform = "translateY(0)";
+            observer.disconnect();
+          }
+        });
+      },
+      { threshold: 0.2 }
+    );
 
-    const handleLenisScroll = () => {
-      handleScroll();
-    };
+    observer.observe(section);
 
-    const lenis = (window as any).__lenis;
-    if (lenis) {
-      lenis.on("scroll", handleLenisScroll);
-    } else {
-      window.addEventListener("scroll", handleScroll, { passive: true });
-    }
-
-    handleScroll();
-
-    return () => {
-      if (lenis) {
-        lenis.off("scroll", handleLenisScroll);
-      } else {
-        window.removeEventListener("scroll", handleScroll);
-      }
-    };
+    return () => observer.disconnect();
   }, []);
 
   const words = "Gata să transformi vizitatorii în clienți?".split(" ");
@@ -109,6 +90,7 @@ export default function CTA() {
           justifyContent: "center",
           gap: "0 0.3em",
           opacity: 0,
+          transition: "opacity 1s ease-out",
           color: "#ffffff",
         }}
       >
@@ -129,6 +111,7 @@ export default function CTA() {
           transformOrigin: "center",
           transform: "scaleX(0)",
           opacity: 0,
+          transition: "transform 0.8s ease-out, opacity 0.8s ease-out",
         }}
       />
 
@@ -146,7 +129,7 @@ export default function CTA() {
           borderRadius: "100px",
           opacity: 0,
           transform: "translateY(20px)",
-          transition: "background 0.4s ease, border-color 0.4s ease, color 0.4s ease",
+          transition: "opacity 0.8s ease-out 0.3s, transform 0.8s ease-out 0.3s, background 0.4s ease, border-color 0.4s ease, color 0.4s ease",
         }}
         onMouseEnter={(e) => {
           e.currentTarget.style.background = "rgba(139,92,246,0.1)";
