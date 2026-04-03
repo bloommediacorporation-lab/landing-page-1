@@ -13,7 +13,7 @@ export default function CTA() {
     const line = lineRef.current;
     const button = buttonRef.current;
 
-    if (!section || !title) return;
+    if (!section || !title || !line || !button) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
