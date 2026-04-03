@@ -1,8 +1,4 @@
 import { useRef, useEffect } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-gsap.registerPlugin(ScrollTrigger);
 
 const PROJECTS = [
   {
@@ -32,57 +28,16 @@ const PROJECTS = [
 ];
 
 export default function HorizontalScroll() {
-  const sectionRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
-  const titleRef = useRef<HTMLHeadingElement>(null);
 
   useEffect(() => {
-    if (!sectionRef.current || !trackRef.current) return;
-
+    if (!trackRef.current) return;
     const track = trackRef.current;
-    const cards = track.querySelectorAll(".project-card");
-
-    if (titleRef.current) {
-      gsap.fromTo(
-        titleRef.current,
-        { opacity: 0, x: -40 },
-        {
-          opacity: 1,
-          x: 0,
-          duration: 1,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top 80%",
-            once: true,
-          },
-        }
-      );
-    }
-
-    cards.forEach((card, i) => {
-      gsap.fromTo(
-        card,
-        { opacity: 0, x: 100 },
-        {
-          opacity: 1,
-          x: 0,
-          duration: 0.8,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top 70%",
-            once: true,
-          },
-          delay: i * 0.15,
-        }
-      );
-    });
+    track.scrollLeft = 0;
   }, []);
 
   return (
     <section
-      ref={sectionRef}
       style={{
         padding: "clamp(8rem, 15vh, 12rem) 0",
         overflow: "hidden",
@@ -98,12 +53,10 @@ export default function HorizontalScroll() {
         }}
       >
         <span
-          ref={titleRef}
           style={{
             fontSize: "0.7rem",
             color: "#333",
             fontFamily: "monospace",
-            opacity: 0,
           }}
         >
           03/
@@ -121,6 +74,7 @@ export default function HorizontalScroll() {
 
       <div
         ref={trackRef}
+        className="scroll-track"
         style={{
           display: "flex",
           gap: "2rem",
@@ -130,8 +84,8 @@ export default function HorizontalScroll() {
           scrollSnapType: "x mandatory",
           scrollBehavior: "smooth",
           WebkitOverflowScrolling: "touch",
-          "scrollbar-width": "none",
-          "msOverflowStyle": "none",
+          scrollbarWidth: "none",
+          msOverflowStyle: "none",
         }}
       >
         {PROJECTS.map((project, i) => (
@@ -155,7 +109,6 @@ export default function HorizontalScroll() {
               cursor: "pointer",
               scrollSnapAlign: "start",
               transition: "transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s",
-              opacity: 0,
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.transform = "scale(0.98) translateY(-4px)";
@@ -292,8 +245,12 @@ export default function HorizontalScroll() {
       </div>
 
       <style>{`
-        .project-card::-webkit-scrollbar {
+        .scroll-track::-webkit-scrollbar {
           display: none;
+        }
+        .scroll-track {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
         }
       `}</style>
     </section>
