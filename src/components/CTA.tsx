@@ -1,39 +1,40 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function CTA() {
-  const contentRef = useRef<HTMLDivElement>(null);
   const lineRef = useRef<HTMLDivElement>(null);
-  const sectionRef = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const buttonRef = useRef<HTMLAnchorElement>(null);
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     const section = sectionRef.current;
-    const title = titleRef.current;
-    const line = lineRef.current;
-    const button = buttonRef.current;
-
-    if (!section || !title || !line || !button) return;
+    if (!section) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            title.style.opacity = "1";
-            line.style.opacity = "1";
-            line.style.transform = "scaleX(1)";
-            button.style.opacity = "1";
-            button.style.transform = "translateY(0)";
+            setIsVisible(true);
           }
         });
       },
-      { threshold: 0.2 }
+      { threshold: 0.3 }
     );
 
     observer.observe(section);
 
     return () => observer.disconnect();
   }, []);
+
+  useEffect(() => {
+    if (isVisible && lineRef.current && buttonRef.current) {
+      lineRef.current.style.opacity = "1";
+      lineRef.current.style.transform = "scaleX(1)";
+      buttonRef.current.style.opacity = "1";
+      buttonRef.current.style.transform = "translateY(0)";
+    }
+  }, [isVisible]);
 
   const words = "Gata să transformi vizitatorii în clienți?".split(" ");
 
@@ -89,7 +90,7 @@ export default function CTA() {
           flexWrap: "wrap",
           justifyContent: "center",
           gap: "0 0.3em",
-          opacity: 0,
+          opacity: isVisible ? 1 : 0,
           transition: "opacity 1.2s ease-out",
         }}
       >
@@ -116,8 +117,7 @@ export default function CTA() {
           transformOrigin: "center",
           transform: "scaleX(0)",
           opacity: 0,
-          transition: "transform 0.8s ease-out, opacity 0.8s ease-out",
-          transitionDelay: "0.3s",
+          transition: "transform 0.8s ease-out 0.3s, opacity 0.8s ease-out 0.3s",
         }}
       />
 
@@ -135,8 +135,7 @@ export default function CTA() {
           borderRadius: "100px",
           opacity: 0,
           transform: "translateY(20px)",
-          transition: "opacity 0.8s ease-out, transform 0.8s ease-out, background 0.4s ease, border-color 0.4s ease, color 0.4s ease",
-          transitionDelay: "0.6s",
+          transition: "opacity 0.8s ease-out 0.6s, transform 0.8s ease-out 0.6s, background 0.4s ease, border-color 0.4s ease, color 0.4s ease",
         }}
         onMouseEnter={(e) => {
           e.currentTarget.style.background = "rgba(139,92,246,0.1)";
