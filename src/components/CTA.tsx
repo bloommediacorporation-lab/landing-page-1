@@ -1,71 +1,10 @@
 import { useEffect, useRef } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-gsap.registerPlugin(ScrollTrigger);
 
 export default function CTA() {
-  const titleRef = useRef<HTMLHeadingElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const lineRef = useRef<HTMLDivElement>(null);
   const sectionRef = useRef<HTMLElement>(null);
-
-  useEffect(() => {
-    if (titleRef.current) {
-      const words = titleRef.current.querySelectorAll(".cta-word");
-      words.forEach((word, i) => {
-        gsap.fromTo(
-          word,
-          { opacity: 0.08 },
-          {
-            opacity: 1,
-            scrollTrigger: {
-              trigger: word,
-              start: "top 80%",
-              end: "top 40%",
-              scrub: 1,
-            },
-          }
-        );
-      });
-    }
-
-    if (contentRef.current) {
-      gsap.fromTo(
-        contentRef.current.children,
-        { opacity: 0, y: 30 },
-        {
-          opacity: 1,
-          y: 0,
-          stagger: 0.15,
-          duration: 0.8,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: contentRef.current,
-            start: "top 75%",
-            once: true,
-          },
-        }
-      );
-    }
-
-    if (lineRef.current) {
-      gsap.fromTo(
-        lineRef.current,
-        { scaleX: 0 },
-        {
-          scaleX: 1,
-          duration: 1.5,
-          ease: "power3.inOut",
-          scrollTrigger: {
-            trigger: lineRef.current,
-            start: "top 80%",
-            once: true,
-          },
-        }
-      );
-    }
-  }, []);
+  const titleRef = useRef<HTMLHeadingElement>(null);
 
   useEffect(() => {
     const title = titleRef.current;
@@ -77,9 +16,12 @@ export default function CTA() {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             const words = title.querySelectorAll(".cta-word");
-            words.forEach((word) => {
-              (word as HTMLElement).style.color = "#ffffff";
-              (word as HTMLElement).style.webkitTextStroke = "0px #ffffff";
+            words.forEach((word, i) => {
+              setTimeout(() => {
+                (word as HTMLElement).style.color = "#ffffff";
+                (word as HTMLElement).style.webkitTextStroke = "0px #ffffff";
+                (word as HTMLElement).style.opacity = "1";
+              }, i * 80);
             });
           }
         });
@@ -90,6 +32,31 @@ export default function CTA() {
     observer.observe(section);
 
     return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (lineRef.current && contentRef.current) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              lineRef.current!.style.transform = "scaleX(1)";
+              Array.from(contentRef.current!.children).forEach((child, i) => {
+                setTimeout(() => {
+                  (child as HTMLElement).style.opacity = "1";
+                  (child as HTMLElement).style.transform = "translateY(0)";
+                }, 400 + i * 150);
+              });
+            }
+          });
+        },
+        { threshold: 0.3 }
+      );
+
+      observer.observe(sectionRef.current!);
+
+      return () => observer.disconnect();
+    }
   }, []);
 
   const words = "Gata să transformi vizitatorii în clienți?".split(" ");
@@ -153,10 +120,10 @@ export default function CTA() {
             key={i}
             className="cta-word"
             style={{ 
-              opacity: 0.08,
+              opacity: 0,
               color: "transparent",
-              WebkitTextStroke: "1px rgba(255,255,255,0.25)",
-              transition: "color 0.8s ease, webkitTextStroke 0.8s ease, opacity 0.8s ease"
+              WebkitTextStroke: "2px rgba(255,255,255,0.5)",
+              transition: "all 0.6s cubic-bezier(0.16, 1, 0.3, 1)",
             }}
           >
             {word}
@@ -173,6 +140,7 @@ export default function CTA() {
           margin: "3rem 0",
           transformOrigin: "center",
           transform: "scaleX(0)",
+          transition: "transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)",
         }}
       />
 
@@ -189,6 +157,8 @@ export default function CTA() {
             border: "1px solid rgba(139,92,246,0.3)",
             borderRadius: "100px",
             transition: "all 0.4s ease",
+            opacity: 0,
+            transform: "translateY(20px)",
           }}
           onMouseEnter={(e) => {
             (e.currentTarget as HTMLAnchorElement).style.background =
