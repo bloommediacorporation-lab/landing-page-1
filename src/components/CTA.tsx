@@ -11,20 +11,19 @@ export default function CTA() {
     const section = sectionRef.current;
     if (!section) return;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setIsVisible(true);
-          }
-        });
-      },
-      { threshold: 0.3 }
-    );
+    const handleScroll = () => {
+      const rect = section.getBoundingClientRect();
+      const windowHeight = window.innerHeight;
+      
+      if (rect.top < windowHeight * 0.7 && rect.bottom > 0) {
+        setIsVisible(true);
+      }
+    };
 
-    observer.observe(section);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
 
-    return () => observer.disconnect();
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   useEffect(() => {
