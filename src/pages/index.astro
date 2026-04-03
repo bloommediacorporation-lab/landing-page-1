@@ -21,7 +21,6 @@ import Footer from "../components/Footer";
 ---
 
 <Layout title="Bloom Media — Marketing Digital">
-  <!-- System layers -->
   <Loader client:only="react" />
   <CustomCursor client:only="react" />
   <SmoothScroll client:only="react" />
@@ -29,23 +28,29 @@ import Footer from "../components/Footer";
   <BackgroundGrid />
   <Navbar client:only="react" />
 
-  <!-- 01 — Hero -->
-  <div style="position: relative;">
+  <!-- Hero -->
+  <div style="position: relative; z-index: 1; background: #050505;">
     <HeroScene client:only="react" />
     <Hero client:only="react" />
   </div>
 
-  <!-- Social Proof -->
-  <LogoMarquee client:only="react" />
+  <!-- Logo Marquee -->
+  <div style="position: relative; z-index: 2; background: #050505;">
+    <LogoMarquee client:only="react" />
+  </div>
 
-  <!-- 02 — About -->
-  <About client:only="react" />
+  <!-- About -->
+  <div style="position: relative; z-index: 3; background: #050505;">
+    <About client:only="react" />
+  </div>
 
   <!-- Stats -->
-  <AnimatedStats client:only="react" />
+  <div style="position: relative; z-index: 4; background: #050505;">
+    <AnimatedStats client:only="react" />
+  </div>
 
   <!-- Velocity Marquee -->
-  <div style="position: relative; border-top: 1px solid rgba(255,255,255,0.03); border-bottom: 1px solid rgba(255,255,255,0.03); padding: 1.5rem 0; overflow: hidden; z-index: 1;">
+  <div style="position: relative; z-index: 5; background: #050505; border-top: 1px solid rgba(255,255,255,0.03); border-bottom: 1px solid rgba(255,255,255,0.03); padding: 1.5rem 0; overflow: hidden;">
     <VelocityMarquee
       client:only="react"
       text="LANDING PAGES · AUTOMATIZĂRI · CONVERSIE MAXIMĂ · DESIGN PREMIUM · SEO & ADS"
@@ -60,21 +65,33 @@ import Footer from "../components/Footer";
     />
   </div>
 
-  <!-- 03 — Projects (horizontal scroll) -->
-  <HorizontalScroll client:only="react" />
+  <!-- Projects -->
+  <div style="position: relative; z-index: 6; background: #050505;">
+    <HorizontalScroll client:only="react" />
+  </div>
 
-  <!-- 04 — Services -->
-  <Services client:only="react" />
+  <!-- Services -->
+  <div style="position: relative; z-index: 7; background: #050505;">
+    <Services client:only="react" />
+  </div>
 
   <!-- Divider -->
-  <SectionDivider />
+  <div style="position: relative; z-index: 8; background: #050505;">
+    <SectionDivider />
+  </div>
 
   <!-- Testimonials -->
-  <Testimonials client:only="react" />
+  <div style="position: relative; z-index: 9; background: #050505;">
+    <Testimonials client:only="react" />
+  </div>
 
   <!-- CTA -->
-  <CTA client:only="react" />
+  <div style="position: relative; z-index: 10; background: #050505;">
+    <CTA client:only="react" />
+  </div>
 
   <!-- Footer -->
-  <Footer client:only="react" />
+  <div style="position: relative; z-index: 11; background: #050505;">
+    <Footer client:only="react" />
+  </div>
 </Layout>
